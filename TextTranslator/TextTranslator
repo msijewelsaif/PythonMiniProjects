@@ -1,0 +1,51 @@
+from tkinter import *
+from tkinter import messagebox
+from googletrans import Translator
+
+root = Tk()
+root.title("English to Bangla Translator")
+root.geometry("900x450")
+root.config(background="#f0f0f0")
+root.resizable(False, False)
+
+translator = Translator()
+
+def translate_text():
+    text = enter_text.get("1.0", END).strip()
+    if not text:
+        messagebox.showwarning("Input Error", "Please insert text to translate")
+        return
+    translated = translator.translate(text, src='en', dest='bn')
+    translated_text.config(state=NORMAL)
+    translated_text.delete("1.0", END)
+    translated_text.insert(END, translated.text)
+    translated_text.config(state=DISABLED)
+
+def clear_text():
+    enter_text.delete("1.0", END)
+    translated_text.config(state=NORMAL)
+    translated_text.delete("1.0", END)
+    translated_text.config(state=DISABLED)
+
+heading = Label(root, text="English to Bangla Translator", font=("Trebuchet MS", 26, "bold"), bg="#f0f0f0", fg="#333333")
+heading.pack(pady=(20, 10))
+
+input_frame = Frame(root, bg="#f0f0f0")
+input_frame.pack(pady=(10, 20))
+
+enter_text = Text(input_frame, width=50, height=5, font=("Arial", 16), bg="#ffffff", fg="#000000", border=2, relief=SOLID)
+enter_text.grid(row=0, column=0, padx=10, pady=10)
+
+translate_button = Button(input_frame, text="Translate", font=("Arial", 14, "bold"), bg="#333333", fg="#ffffff", command=translate_text)
+translate_button.grid(row=0, column=1, padx=10)
+
+output_frame = Frame(root, bg="#f0f0f0")
+output_frame.pack(pady=(10, 20))
+
+translated_text = Text(output_frame, width=50, height=5, font=("Arial", 16), bg="#ffffff", fg="#000000", border=2, relief=SOLID, state=DISABLED)
+translated_text.grid(row=0, column=0, padx=10, pady=10)
+
+clear_button = Button(root, text="Clear", font=("Arial", 14, "bold"), bg="#333333", fg="#ffffff", command=clear_text)
+clear_button.pack(pady=(10, 20))
+
+root.mainloop()
