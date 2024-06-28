@@ -1,0 +1,113 @@
+import tkinter as tk
+from tkinter import messagebox
+
+class Item:
+    def __init__(self, name, price, quantity=1):
+        self.name = name
+        self.price = price
+        self.quantity = quantity
+
+class ShoppingCart:
+    def __init__(self):
+        self.cart = []
+
+    def add_item(self, item):
+        for i in range(len(self.cart)):
+            if self.cart[i].name == item.name:
+                self.cart[i].quantity += item.quantity
+                return
+        self.cart.append(item)
+
+    def remove_item(self, item_name):
+        for item in self.cart:
+            if item.name == item_name:
+                self.cart.remove(item)
+                return
+
+    def view_cart(self):
+        return self.cart
+
+    def calculate_total(self):
+        total = sum(item.price * item.quantity for item in self.cart)
+        return total
+
+class ShoppingApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Shopping Cart")
+        
+        self.shopping_cart = ShoppingCart()
+
+        
+        bg_color = "#f0f0f0"
+        fg_color = "#333333"
+        btn_bg_color = "#4CAF50"
+        btn_fg_color = "white"
+
+        
+        main_frame = tk.Frame(root, bg=bg_color)
+        main_frame.pack(padx=20, pady=20)
+
+  
+        tk.Label(main_frame, text="Item Name:", bg=bg_color, fg=fg_color).grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.item_entry = tk.Entry(main_frame)
+        self.item_entry.grid(row=0, column=1, padx=5, pady=5)
+        
+        tk.Label(main_frame, text="Price:", bg=bg_color, fg=fg_color).grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.price_entry = tk.Entry(main_frame)
+        self.price_entry.grid(row=1, column=1, padx=5, pady=5)
+        
+        tk.Label(main_frame, text="Quantity:", bg=bg_color, fg=fg_color).grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        self.quantity_entry = tk.Entry(main_frame)
+        self.quantity_entry.grid(row=2, column=1, padx=5, pady=5)
+
+     
+        self.add_button = tk.Button(main_frame, text="Add Item", bg=btn_bg_color, fg=btn_fg_color, command=self.add_item)
+        self.add_button.grid(row=3, column=0, columnspan=2, padx=5, pady=10)
+
+        tk.Label(main_frame, text="Remove Item:", bg=bg_color, fg=fg_color).grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.remove_entry = tk.Entry(main_frame)
+        self.remove_entry.grid(row=4, column=1, padx=5, pady=5)
+        
+        self.remove_button = tk.Button(main_frame, text="Remove Item", bg=btn_bg_color, fg=btn_fg_color, command=self.remove_item)
+        self.remove_button.grid(row=5, column=0, columnspan=2, padx=5, pady=10)
+
+        self.view_cart_button = tk.Button(main_frame, text="View Cart", bg=btn_bg_color, fg=btn_fg_color, command=self.view_cart)
+        self.view_cart_button.grid(row=6, column=0, columnspan=2, padx=5, pady=10)
+
+ 
+        tk.Label(main_frame, text="Total Price:", bg=bg_color, fg=fg_color).grid(row=7, column=0, padx=5, pady=5, sticky="w")
+        self.total_value_label = tk.Label(main_frame, text="", bg=bg_color, fg=fg_color)
+        self.total_value_label.grid(row=7, column=1, padx=5, pady=5)
+
+        self.calculate_total_button = tk.Button(main_frame, text="Calculate Total", bg=btn_bg_color, fg=btn_fg_color, command=self.calculate_total)
+        self.calculate_total_button.grid(row=8, column=0, columnspan=2, padx=5, pady=10)
+
+    def add_item(self):
+        name = self.item_entry.get()
+        price = float(self.price_entry.get())
+        quantity = int(self.quantity_entry.get())
+
+        item = Item(name, price, quantity)
+        self.shopping_cart.add_item(item)
+        messagebox.showinfo("Item Added", f"{quantity} {name}(s) added to cart.")
+
+    def remove_item(self):
+        name = self.remove_entry.get()
+        self.shopping_cart.remove_item(name)
+        messagebox.showinfo("Item Removed", f"{name} removed from cart.")
+
+    def view_cart(self):
+        cart = self.shopping_cart.view_cart()
+        cart_str = "\n".join([f"{item.name} - BDT{item.price} x {item.quantity}" for item in cart])
+        messagebox.showinfo("Shopping Cart", f"Current Cart:\n{cart_str}")
+
+    def calculate_total(self):
+        total = self.shopping_cart.calculate_total()
+        self.total_value_label.config(text=f"BDT {total}")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ShoppingApp(root)
+    app.root.geometry("400x400")
+    root.mainloop()
